@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  height: 100vh;
+  margin: 0;
+  background: radial-gradient(circle at top, #2a1a2e, #0d0d16);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+
+  /* 🧠 3D perspective */
+  perspective: 800px;
+}
+
+/* 💖 Floating hearts */
+.heart {
+  position: absolute;
+  bottom: -20px;
+  color: rgba(255,105,135,0.25);
+  font-size: 20px;
+  animation: float 10s linear infinite;
+}
+
+@keyframes float {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to { transform: translateY(-120vh) scale(1.5); opacity: 0; }
+}
+
+/* 🦋 Butterfly (3D enhanced) */
+.butterfly {
+  position: absolute;
+  font-size: 22px;
+  pointer-events: none;
+
+  transform-style: preserve-3d;
+  animation: fly3D var(--dur) ease-in-out forwards;
+}
+
+/* 🌈 3D curved motion */
+@keyframes fly3D {
+  0% {
+    transform: translate3d(0, 0, var(--z)) scale(0.6) rotateY(0deg);
+    opacity: 1;
+    filter: blur(var(--blur));
+  }
+  50% {
+    transform: translate3d(calc(var(--x) / 2), -140px, var(--z)) scale(1)
+      rotateY(15deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(var(--x), -300px, var(--z)) scale(1.25)
+      rotateY(-20deg);
+    opacity: 0;
+    filter: blur(calc(var(--blur) + 0.5px));
+  }
+}
+
+/* 😊 tiny wiggle */
+@keyframes wiggle {
+  0%,100% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  75% { transform: rotate(-5deg); }
+}
+
+.wiggle {
+  display: inline-block;
+  animation: wiggle 1.5s infinite;
+}
+
+/* LANDING */
+.landing {
+  text-align: center;
+  animation: fadeIn 1.2s ease;
+  z-index: 3;
+}
+
+.landing button {
+  padding: 20px 28px;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(135deg, #ff8fa3, #ff5f8a);
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.landing button.blast {
+  animation: blast 0.4s ease;
+}
+
+@keyframes blast {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(0.95); }
+}
+
+/* CARD */
+.container {
+  display: none;
+  width: 90%;
+  max-width: 440px;
+  padding: 35px;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+  animation: slideUp 1.2s ease;
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+h2 { text-align: center; }
+
+.name {
+  text-align: center;
+  opacity: 0.85;
+  margin-bottom: 20px;
+}
+
+.text {
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 120px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+button.action {
+  flex: 1;
+  padding: 13px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.try {
+  background: linear-gradient(135deg, #ff8fa3, #ff5f8a);
+  color: white;
+}
+
+.space {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.35);
+  color: white;
+}
+
+.music {
+  text-align: center;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f672b2;
+  color: white;
+  border-radius: 10px;
+  font-size: 13px;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.footer {
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 15px;
+}
+/* 🧵 Butterfly Thread */
+.thread {
+  position: absolute;
+  right: 15px;
+  top: 60px;
+  bottom: 40px;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.1),
+    rgba(255,182,193,0.5),
+    rgba(255,255,255,0.1)
+  );
+  z-index: 5;
+}
+
+.thread-butterfly {
+  position: absolute;
+  left: -14px;
+  font-size: 22px;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.3s ease;
+}
+
+.thread-butterfly:active {
+  cursor: grabbing;
+  transform: scale(1.2);
+}
+
+/* 🎬 Media Viewer */
+.media-viewer {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  border-radius: 22px;
+  z-index: 10;
+}
+
+.media-box {
+  max-width: 90%;
+  max-height: 80%;
+}
+
+.media-box img,
+.media-box video {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.close-media {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Floating hearts -->
+<script>
+for (let i = 0; i < 25; i++) {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerHTML = "❤";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = 7 + Math.random() * 6 + "s";
+  heart.style.fontSize = 14 + Math.random() * 20 + "px";
+  document.body.appendChild(heart);
+}
+</script>
+
+<!-- LANDING -->
+<div class="landing" id="landing">
+  <h1>Hey Baby Mirthula Manikandan🩷</h1>
+  <button id="openBtn" onclick="openSorry(this)">
+    Tap to read something from me
+  </button>
+</div>
+
+<!-- APOLOGY -->
+<div class="container" id="sorryCard">
+    <!-- 🧵 Butterfly Thread -->
+<div class="thread">
+  <div class="thread-butterfly" data-type="image" data-src="RM.jpeg" style="top: 20%;">🦋</div>
+  <div class="thread-butterfly" data-type="video" data-src="RM.mp4" style="top: 55%;">🦋</div>
+</div>
+
+<!-- 🎬 Media Viewer -->
+<div class="media-viewer" id="mediaViewer">
+  <div class="close-media" onclick="closeMedia()">✕</div>
+  <div class="media-box" id="mediaBox"></div>
+</div>
+
+  <h2>I’m Sorry</h2>
+  <div class="name">This is for you, <strong>Mirthula🩷</strong></div>
+
+  <div class="text" id="type"></div>
+     
+  <div style="text-align: center;padding: 5px;border:1px solid #ff8fa3;border-radius: 10px;margin-top: 10px;">Drag those butterflies to reveal memories</div>
+
+  <div id="smileLine" style="display:none;text-align:center;margin-top:10px;font-size:13px;opacity:0.85;">
+    Okay… now please smile a little 😄 <span class="wiggle">🐣</span>
+  </div>
+
+  <div class="actions">
+    <button class="action try" onclick="forgive()">We can heal</button>
+    <button class="action space" onclick="needTime()" style="border: 1px solid pink;">Take your time</button>
+  </div>
+
+  <div style="text-align:center;margin-top:10px;font-size:12px;">
+    This for Enaval 💕 (yes, exclusively 😌)
+  </div>
+
+  <div class="music" onclick="toggleMusic()">🎧 Play our song (Aval)</div>
+
+  <div class="footer">
+    Whatever you choose, I’ll respect it.
+  </div>
+</div>
+
+<audio id="song">
+  <source src="aval.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const message =
+  "I know I failed you. I’m not here to justify myself. I just want you to know that I see my mistakes clearly now — and I take full responsibility for everything.I never repeat this again. I want to be better for you, for us. If you can find it in your heart to forgive me, I promise to cherish and respect you always. But if you need time, I understand. I’ll wait for you, no matter how long it takes. Because you’re worth it.";
+
+let i = 0;
+let playing = false;
+const myWhatsAppNumber = "919751372227";
+
+function openSorry(btn) {
+  btn.classList.add("blast");
+  spawnButterflies(btn);
+
+  setTimeout(() => {
+    document.getElementById("landing").style.display = "none";
+    document.getElementById("sorryCard").style.display = "block";
+    typing();
+  }, 700);
+}
+
+function spawnButterflies(btn) {
+  const rect = btn.getBoundingClientRect();
+
+  for (let i = 0; i < 10; i++) {
+    const b = document.createElement("div");
+    b.className = "butterfly";
+    b.innerHTML = "🦋";
+
+    b.style.left = rect.left + rect.width / 2 + "px";
+    b.style.top = rect.top + "px";
+
+    const z = Math.random() * 200 - 100;   // depth
+    const blur = Math.abs(z) / 120;        // blur by depth
+
+    b.style.setProperty("--x", `${Math.random() * 360 - 180}px`);
+    b.style.setProperty("--dur", `${3 + Math.random() * 2}s`);
+    b.style.setProperty("--z", `${z}px`);
+    b.style.setProperty("--blur", `${blur}px`);
+
+    document.body.appendChild(b);
+    setTimeout(() => b.remove(), 5500);
+  }
+}
+
+function typing() {
+  if (i < message.length) {
+    document.getElementById("type").innerHTML += message.charAt(i);
+    i++;
+    setTimeout(typing, 30);
+  } else {
+    document.getElementById("smileLine").style.display = "block";
+  }
+}
+
+function forgive() {
+  if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+  setTimeout(() => {
+    window.location.href =
+      `https://wa.me/${myWhatsAppNumber}?text=${encodeURIComponent("I forgive you.")}`;
+  }, 300);
+}
+
+function needTime() {
+  alert("Okay 😄 I’ll wait… but I might miss you a little.");
+}
+
+function toggleMusic() {
+  const song = document.getElementById("song");
+  playing ? song.pause() : song.play();
+  playing = !playing;
+}
+// 🦋 Drag butterflies to reveal memories
+const butterflies = document.querySelectorAll(".thread-butterfly");
+const viewer = document.getElementById("mediaViewer");
+const mediaBox = document.getElementById("mediaBox");
+
+butterflies.forEach(b => {
+  let dragging = false;
+
+  b.addEventListener("mousedown", () => dragging = true);
+  document.addEventListener("mouseup", () => {
+    if (dragging) {
+      openMedia(b.dataset.type, b.dataset.src);
+    }
+    dragging = false;
+  });
+});
+
+function openMedia(type, src) {
+  mediaBox.innerHTML = "";
+
+  if (type === "image") {
+    const img = document.createElement("img");
+    img.src = src;
+    mediaBox.appendChild(img);
+  }
+
+  if (type === "video") {
+    const video = document.createElement("video");
+    video.src = src;
+    video.controls = true;
+    video.autoplay = true;
+    mediaBox.appendChild(video);
+  }
+
+  viewer.style.display = "flex";
+}
+
+function closeMedia() {
+  viewer.style.display = "none";
+  mediaBox.innerHTML = "";
+}
+
+</script>
+
+</body>
+</html>
